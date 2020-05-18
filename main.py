@@ -1,8 +1,10 @@
 
-import numpy as np
-import numberSorting as ns
-import randomArrays as ra
+import matplotlib.pyplot as plt
 
-a = ra.generate_random_number_array(750)
+import numberSorting as nS
+import sortingAnimation as sA
 
-ns.merge_sort(a)
+array_size = 8
+bs = nS.BubbleSort()
+x = sA.Anim(bs, array_size)
+plt.show()
