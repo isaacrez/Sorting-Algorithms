@@ -4,9 +4,14 @@ import matplotlib.pyplot as plt
 import numberSorting as nS
 import sortingAnimation as sA
 
-array_size = 25
+# PARAMETERS
+array_size = 10
 interval = 1
 
-bs = nS.InsertionSort()
-x = sA.Anim(bs, array_size, interval)
+# All completely implemented methods are below
+# sorting_object = nS.InsertionSort()
+# sorting_object = nS.BubbleSort()
+sorting_object = nS.HeapSort()
+
+animation_storage = sA.Anim(sorting_object, array_size, interval)
 plt.show()
