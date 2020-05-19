@@ -35,5 +35,7 @@ class Anim:
 
         curr_index = self.sorting_obj.current_index
         self.ax.get_children()[curr_index].set_color('c')
+
         comp_index = self.sorting_obj.compare_index
-        self.ax.get_children()[comp_index].set_color('g')
+        if 0 <= comp_index:
+            self.ax.get_children()[comp_index].set_color('g')
