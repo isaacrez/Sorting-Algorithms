@@ -7,10 +7,11 @@ import randomArrays as ra
 import numberSorting as ns
 
 class Anim:
-    def __init__(self, sorting_obj: ns.Sorter, array_size=10, interval=200):
+    def __init__(self, sorting_obj: ns.Sorter, array_size=10, interval=200, steps_per=1):
         fig, self.ax = plt.subplots()
         self.sorting_obj = sorting_obj
         self.initial_array(array_size)
+        self.steps_per = steps_per
         self.animator = FuncAnimation(fig, self.animate, repeat=False, interval=interval)
 
     def initial_array(self, array_size):
@@ -21,10 +22,9 @@ class Anim:
 
     def animate(self, i):
         # Determine if stopping
-        self.sorting_obj.sort_step()
+        self.sorting_obj.sort_step(self.steps_per)
         if self.sorting_obj.done:
             self.animator.event_source.stop()
-            return
         self.ax.clear()
 
         # Update plot

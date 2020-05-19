@@ -61,13 +61,15 @@ class MergeSort(Sorter):
         self.current_index = 1
         self.compare_index = 0
 
-    def sort_step(self):
-        if self.partition_size == 2:
-            self._base_sort()
-        elif self.partition_size/2 < self.num_array.size:
-            self._standard_sort()
-        else:
-            self.done = True
+    def sort_step(self, steps_taken):
+        for i in range(steps_taken):
+            if self.partition_size == 2:
+                self._base_sort()
+            elif self.partition_size/2 < self.num_array.size:
+                self._standard_sort()
+            else:
+                self.done = True
+                break
 
     # TODO: Allow sorting of combined values to be displayed
     def _standard_sort(self):
@@ -159,26 +161,28 @@ class InsertionSort(Sorter):
         # This holds the current position that's been last sorted
         self.position_index = 0
 
-    def sort_step(self):
-        i = self.current_index
-        j = self.compare_index
+    def sort_step(self, steps_taken):
+        for i in range(steps_taken):
+            i = self.current_index
+            j = self.compare_index
 
-        # Identified a switch
-        if self.num_array[i] < self.num_array[j]:
-            self._swap_indices(i, j)
-            self.current_index -= 1
-            self.compare_index -= 1
+            # Identified a switch
+            if self.num_array[i] < self.num_array[j]:
+                self._swap_indices(i, j)
+                self.current_index -= 1
+                self.compare_index -= 1
 
-            if self.compare_index < 0:
+                if self.compare_index < 0:
+                    self._iterate_array()
+
+            # Number is positioned appropriately
+            else:
                 self._iterate_array()
 
-        # Number is positioned appropriately
-        else:
-            self._iterate_array()
-
-        # Finished sorting the num_array
-        if self.position_index == self.num_array.size:
-            self.done = True
+            # Finished sorting the num_array
+            if self.position_index == self.num_array.size:
+                self.done = True
+                break
 
     def _iterate_array(self):
         self.position_index += 1
@@ -191,14 +195,15 @@ class BubbleSort(Sorter):
         super().__init__(num_array)
         self._changed = False
 
-    def sort_step(self):
-        self._update_index()
-        if not self.done:
-            i = self.current_index
-            j = self.compare_index
-            if self.num_array[i] < self.num_array[j]:
-                self._changed = True
-                self._swap_indices(i, i - 1)
+    def sort_step(self, steps_taken):
+        for i in range(steps_taken):
+            self._update_index()
+            if not self.done:
+                i = self.current_index
+                j = self.compare_index
+                if self.num_array[i] < self.num_array[j]:
+                    self._changed = True
+                    self._swap_indices(i, i - 1)
 
     def _update_index(self):
         self.current_index += 1
@@ -218,11 +223,12 @@ class HeapSort(Sorter):
         self.heap_size = 0
         self.is_heap = False
 
-    def sort_step(self):
-        if not self.is_heap:
-            self._heapify()
-        if self.is_heap:
-            self._sort()
+    def sort_step(self, steps_taken):
+        for i in range(steps_taken):
+            if not self.is_heap:
+                self._heapify()
+            if self.is_heap:
+                self._sort()
 
     def _sort(self):
         if 0 < self.heap_size:
