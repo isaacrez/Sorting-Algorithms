@@ -1,7 +1,7 @@
-
 import math
 import numpy as np
 import random
+
 
 class Sorter():
     def __init__(self, num_array=[]):
@@ -52,7 +52,8 @@ class Sorter():
         self.num_array[index1] = self.num_array[index2]
         self.num_array[index2] = temp
 
-#TODO: Update to properly fit "Sorter" format
+
+# TODO: Update to properly fit "Sorter" format
 class MergeSort(Sorter):
     def __init__(self, num_array=[]):
         super().__init__(num_array)
@@ -64,31 +65,32 @@ class MergeSort(Sorter):
             return num_array
         elif N == 2:
             if num_array[1] < num_array[0]:
-                num_array = _swap_indices(num_array, 0, 1)
+                num_array = self._swap_indices(0, 1)
             return num_array
 
         # Retrieve
-        split = math.ceil(N/2)
+        split = math.ceil(N / 2)
         sorted1 = self.merge_sort(num_array[0:split])
         sorted2 = self.merge_sort(num_array[split:N])
         return self._combine_sorted(sorted1, sorted2)
 
-#TODO: Update to properly fit "Sorter" format
+
+# TODO: Update to properly fit "Sorter" format
 class QuickSort(Sorter):
     def __init__(self, num_array=[]):
         super().__init__(num_array)
 
     def quick_sort(self, num_array):
-        #TODO: Develop iterative approach; recursion limit is hit very quickly
+        # TODO: Develop iterative approach; recursion limit is hit very quickly
         n = num_array.size
         if n <= 1:
             return num_array
         if n == 2:
             if num_array[1] < num_array[0]:
-                num_array = _swap_indices(num_array, 0, 1)
+                num_array = self._swap_indices(num_array, 0, 1)
             return num_array
 
-        pivot_index = random.randint(0, n-1)
+        pivot_index = random.randint(0, n - 1)
         pivot = num_array[pivot_index]
 
         upper_partition = []
@@ -151,7 +153,7 @@ class BubbleSort(Sorter):
             j = self.compare_index
             if self.num_array[i] < self.num_array[j]:
                 self._changed = True
-                self._swap_indices(i, i-1)
+                self._swap_indices(i, i - 1)
 
     def _update_index(self):
         self.current_index += 1
@@ -164,69 +166,71 @@ class BubbleSort(Sorter):
                 self.current_index = 1
         self.compare_index = self.current_index - 1
 
-#TODO: Update to properly fit "Sorter" format
-class HeapSort:
+
+class HeapSort(Sorter):
     def __init__(self, num_array=[]):
         super().__init__(num_array)
+        self.heap_size = 0
+        self.is_heap = False
 
-    def sort_step(self, num_array):
-        # Allows user to easily sort a new set of values
-        self.heap_size = num_array.size
-        self.sorted_array = num_array
-        self._heapify()
-        self._sort()
-        return self.sorted_array
-
-    def get_sorted(self):
-        # Allows user to request output after calculating it
-        return self.sorted_array
-
-    def _heapify(self):
-        N = self.sorted_array.size
-        for i in range(N):
-            self._siftup(i)
+    def sort_step(self):
+        if not self.is_heap:
+            self._heapify()
+        if self.is_heap:
+            self._sort()
 
     def _sort(self):
-        # Handles sorting process; sorts in place
-        while self.heap_size != 0:
-            curr_val = self._pop()
-            self.sorted_array[self.heap_size] = curr_val
+        if 0 < self.heap_size:
+            self._pop()
+            self.current_index = self.heap_size
+        else:
+            print(self.num_array)
+            self.done = True
 
     def _pop(self):
-        head = self.sorted_array[0]
+        self.heap_size -= 1
+        head = self.num_array[0]
         self._siftdown()
-        return head
-
-    def _siftup(self, index):
-        while index != 0:
-            parent_index = math.floor((index - 1)/2)
-            current_value = self.sorted_array[index]
-            parent_value = self.sorted_array[parent_index]
-            if current_value > parent_value:
-                self._swap_indices(self.sorted_array, index, parent_index)
-            else:
-                break
-            index = parent_index
+        self.num_array[self.heap_size] = head
 
     def _siftdown(self):
-        self.sorted_array[0] = self.sorted_array[self.heap_size-1]
-        self.heap_size -= 1
-
+        self.num_array[0] = self.num_array[self.heap_size]
         index = 0
-        while index < self.heap_size/2 - 1:
+
+        while index <= self.heap_size / 2 - 1:
             left_index = 2 * index + 1
             right_index = 2 * index + 2
 
-            parent_value = self.sorted_array[index]
-            left_value = self.sorted_array[left_index]
-            right_value = self.sorted_array[right_index]
+            parent_value = self.num_array[index]
+            left_value = self.num_array[left_index]
+            right_value = self.num_array[right_index]
 
             if parent_value < left_value or parent_value < right_value:
                 if left_value < right_value:
-                    self._swap_indices(self.sorted_array, index, right_index)
+                    self._swap_indices(index, right_index)
                     index = right_index
                 else:
-                    self._swap_indices(self.sorted_array, index, left_index)
+                    self._swap_indices(index, left_index)
                     index = left_index
             else:
                 break
+
+    def _heapify(self):
+        if self.num_array.size == self.current_index:
+            self.heap_size = self.num_array.size
+            self.is_heap = True
+            print(self.num_array)
+        else:
+            self._siftup(self.current_index)
+            self.current_index += 1
+
+    def _siftup(self, index):
+        while index != 0:
+            parent_index = math.floor((index - 1) / 2)
+            current_value = self.num_array[index]
+            parent_value = self.num_array[parent_index]
+            if current_value > parent_value:
+                self._swap_indices(index, parent_index)
+            else:
+                break
+            index = parent_index
