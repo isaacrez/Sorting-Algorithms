@@ -105,21 +105,39 @@ class QuickSort(Sorter):
         num_array = np.hstack((lower_partition, upper_partition))
         return num_array
 
-#TODO: Update to properly fit "Sorter" format
-class InsertSort(Sorter):
+
+class InsertionSort(Sorter):
     def __init__(self, num_array=[]):
         super().__init__(num_array)
+        # This holds the current position that's been last sorted
+        self.position_index = 0
 
     def sort_step(self):
-        pass
+        i = self.current_index
+        j = self.compare_index
 
-    def insert_sort(self, num_array):
-        n = self.num_array.size
-        for i in range(1, n):
-            j = i
-            while j != 0 and self.num_array[j] < self.num_array[j-1]:
-                self._swap_indices(num_array, j-1, j)
-                j -= 1
+        # Identified a switch
+        if self.num_array[i] < self.num_array[j]:
+            self._swap_indices(i, j)
+            self.current_index -= 1
+            self.compare_index -= 1
+
+            if self.compare_index < 0:
+                self._iterate_array()
+
+        # Number is positioned appropriately
+        else:
+            self._iterate_array()
+
+        # Finished sorting the num_array
+        if self.position_index == self.num_array.size:
+            self.done = True
+
+    def _iterate_array(self):
+        self.position_index += 1
+        self.current_index = self.position_index
+        self.compare_index = self.position_index - 1
+
 
 class BubbleSort(Sorter):
     def __init__(self, num_array=[]):

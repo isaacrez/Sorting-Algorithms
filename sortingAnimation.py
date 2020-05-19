@@ -7,11 +7,11 @@ import randomArrays as ra
 import numberSorting as ns
 
 class Anim:
-    def __init__(self, sorting_obj: ns.Sorter, array_size):
+    def __init__(self, sorting_obj: ns.Sorter, array_size=10, interval=200):
         fig, self.ax = plt.subplots()
         self.sorting_obj = sorting_obj
         self.initial_array(array_size)
-        self.animator = FuncAnimation(fig, self.animate, frames=100, repeat=False, interval=200)
+        self.animator = FuncAnimation(fig, self.animate, repeat=False, interval=interval)
 
     def initial_array(self, array_size):
         self.ax.set_xlim((0, array_size))
