@@ -9,7 +9,7 @@ class Sorter():
         self.comparisons = 0
         self.accesses = 0
         self.current_index = 0
-        self.compare_index = 0
+        self.compare_index = -1
         self.done = False
 
     def set_array(self, num_array):
@@ -53,10 +53,55 @@ class Sorter():
         self.num_array[index2] = temp
 
 
-# TODO: Update to properly fit "Sorter" format
 class MergeSort(Sorter):
     def __init__(self, num_array=[]):
         super().__init__(num_array)
+        self.partition_size = 2
+        self.partition_index = 0
+        self.current_index = 1
+        self.compare_index = 0
+
+    def sort_step(self):
+        if self.partition_size == 2:
+            self._base_sort()
+        elif self.partition_size/2 < self.num_array.size:
+            self._standard_sort()
+        else:
+            self.done = True
+
+    # TODO: Allow sorting of combined values to be displayed
+    def _standard_sort(self):
+        i = self.partition_index
+        sorted_size = int(self.partition_size/2)
+        split = i + sorted_size
+        sorted_sub_1 = self.num_array[i:split]
+        sorted_sub_2 = self.num_array[split:i + self.partition_size]
+
+        self.num_array[i:i+self.partition_size] = self._combine_sorted(sorted_sub_1, sorted_sub_2)
+        self.partition_index += self.partition_size
+
+        if self.num_array.size <= self.partition_index:
+            self._next_partition()
+
+    def _base_sort(self):
+        i = self.current_index
+        j = self.compare_index
+        if self.num_array.size <= j:
+            self._next_partition()
+            return
+        elif self.num_array[i] < self.num_array[j]:
+            self._swap_indices(i, j)
+        self._update_indices()
+
+    def _update_indices(self):
+        self.compare_index += self.partition_size
+        self.current_index += self.partition_size
+
+    def _next_partition(self):
+        self.current_index = 0
+        self.compare_index = -1
+        self.partition_index = 0
+        self.partition_size *= 2
 
     def merge_sort(self, num_array):
         # Breaks the array into size 1 or 2 sorted arrays, and then merges sorted arrays
@@ -184,7 +229,6 @@ class HeapSort(Sorter):
             self._pop()
             self.current_index = self.heap_size
         else:
-            print(self.num_array)
             self.done = True
 
     def _pop(self):
@@ -219,7 +263,6 @@ class HeapSort(Sorter):
         if self.num_array.size == self.current_index:
             self.heap_size = self.num_array.size
             self.is_heap = True
-            print(self.num_array)
         else:
             self._siftup(self.current_index)
             self.current_index += 1
