@@ -7,12 +7,28 @@ import randomArrays as ra
 import numberSorting as ns
 
 class Anim:
-    def __init__(self, sorting_obj: ns.Sorter, array_size=10, interval=200, steps_per=1):
-        fig, self.ax = plt.subplots()
-        self.sorting_obj = sorting_obj
-        self.initial_array(array_size)
+    def __init__(self, sorting_name: str, array_size=10, interval=200, steps_per=1):
+        self.fig, self.ax = plt.subplots()
+        self.set_sorting_obj(sorting_name)
+        self.array_size = array_size
+        self.interval = interval
         self.steps_per = steps_per
-        self.animator = FuncAnimation(fig, self.animate, repeat=False, interval=interval)
+
+    def set_sorting_obj(self, sorting_name: str):
+        switch = {
+            "Heap": ns.HeapSort,
+            "Merge": ns.MergeSort,
+            "Bubble": ns.BubbleSort,
+            "Insertion": ns.InsertionSort
+        }
+        self.sorting_obj = switch[sorting_name]()
+
+    def start_animation(self):
+        self.initial_array(self.array_size)
+        self.animator = FuncAnimation(self.fig,
+                                      self.animate,
+                                      repeat=False,
+                                      interval=self.interval)
 
     def initial_array(self, array_size):
         self.ax.set_xlim((0, array_size))
@@ -32,6 +48,7 @@ class Anim:
         x_data = np.arange(0, element_count)
         y_data = self.sorting_obj.get_array()
         self.ax.bar(x_data, y_data, align="edge", width=1)
+        self.ax.set_xlim(0, element_count)
 
         curr_index = self.sorting_obj.current_index
         self.ax.get_children()[curr_index].set_color('c')
