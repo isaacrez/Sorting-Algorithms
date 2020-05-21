@@ -7,8 +7,9 @@ import randomArrays as ra
 import numberSorting as ns
 
 class Anim:
-    def __init__(self, sorting_name: str, array_size=10, interval=200, steps_per=1):
-        self.fig, self.ax = plt.subplots()
+    def __init__(self, figure, subplot, sorting_name: str, array_size=10, interval=200, steps_per=1):
+        self.fig = figure
+        self.ax = subplot
         self.set_sorting_obj(sorting_name)
         self.array_size = array_size
         self.interval = interval
@@ -21,7 +22,11 @@ class Anim:
             "Bubble": ns.BubbleSort,
             "Insertion": ns.InsertionSort
         }
-        self.sorting_obj = switch[sorting_name]()
+        generator = switch.get(sorting_name, "Invalid name")
+        if generator is str:
+            print(sorting_name, "is not a valid sorting option")
+        else:
+            self.sorting_obj = switch[sorting_name]()
 
     def start_animation(self):
         self.initial_array(self.array_size)
@@ -49,6 +54,7 @@ class Anim:
         y_data = self.sorting_obj.get_array()
         self.ax.bar(x_data, y_data, align="edge", width=1)
         self.ax.set_xlim(0, element_count)
+        self.ax.set_ylim(0, 100)
 
         curr_index = self.sorting_obj.current_index
         self.ax.get_children()[curr_index].set_color('c')
