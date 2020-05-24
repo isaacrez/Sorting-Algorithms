@@ -51,11 +51,6 @@ class Anim:
                                       repeat=False,
                                       interval=self.interval)
 
-        # TODO: Add ability to save animations
-        # Writer = animation.writers['ffmpeg']
-        # writer = Writer(fps=15, meta=dict(artist='Isaac Rezey'), bitrate=1800)
-        # self.animator.save('sample.mp4', writer=writer)
-
     def initial_array(self, array_size):
         self.ax.set_xlim((0, array_size))
         self.ax.set_ylim((0, 100))
@@ -74,9 +69,14 @@ class Anim:
         element_count = self.sorting_obj.get_array().size
         x_data = np.arange(0, element_count)
         y_data = self.sorting_obj.get_array()
+
         self.ax.bar(x_data, y_data, align="edge", width=1)
+
         self.ax.set_xlim(0, element_count)
         self.ax.set_ylim(0, 100)
+
+        self.ax.axes.xaxis.set_visible(False)
+        self.ax.axes.yaxis.set_visible(False)
 
         curr_index = self.sorting_obj.current_index
         self.ax.get_children()[curr_index].set_color('c')

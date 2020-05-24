@@ -50,7 +50,11 @@ class Window(tk.Frame):
 
         self.sorting_selector = ttk.Combobox(frame)
         self.sorting_selector['values'] = ["Bubble", "Insertion", "Heap", "Merge"]
+        current_index = self.sorting_selector['values'].index(self.sorting_method)
+        self.sorting_selector.current(current_index)
         self.sorting_selector['state'] = 'readonly'
+        self.sorting_selector.insert(tk.END, self.sorting_method)
+
         self.sorting_selector.bind("<<ComboboxSelected>>", self.update_sorting_method)
         self.sorting_selector.pack(fill='x')
 
@@ -59,7 +63,7 @@ class Window(tk.Frame):
         input_id = ["array_size", "interval", "step_size"]
 
         for input_text, id in zip(input_label, input_id):
-            current_entry = make_label_input_set(frame, input_text, validatecommand=vcmd)
+            current_entry = make_label_input_set(frame, input_text, self.sorting_details[id], validatecommand=vcmd)
             event_response = lambda event, id = id, current_entry = current_entry: \
                 self.update_numeric_input(id, current_entry)
             current_entry.bind("<KeyRelease>", event_response)
@@ -82,7 +86,7 @@ class Window(tk.Frame):
         if value_if_allowed:
             try:
                 value = int(value_if_allowed)
-                if 0 < value <= 1024:
+                if 0 < value <= 256:
                     return True
                 return False
             except ValueError:
@@ -110,7 +114,7 @@ class Window(tk.Frame):
         self.canvas.draw()
 
 
-def make_label_input_set(parent_frame: tk.Frame, label_text: str, validatecommand=None):
+def make_label_input_set(parent_frame: tk.Frame, label_text: str, initial_value: str = '8', validatecommand=None):
     frame = tk.Frame(parent_frame)
     frame.pack(anchor='w', fill='x')
 
@@ -121,7 +125,8 @@ def make_label_input_set(parent_frame: tk.Frame, label_text: str, validatecomman
         entry = tk.Entry(frame)
     else:
         entry = tk.Entry(frame, validate='key', validatecommand=validatecommand)
-    entry.insert(10, 8)
+    entry['justify'] = tk.RIGHT
+    entry.insert(10, initial_value)
     entry.pack(anchor='e', expand=True)
     return entry
 
