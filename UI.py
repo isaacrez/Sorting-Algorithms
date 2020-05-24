@@ -102,7 +102,6 @@ class Window(tk.Frame):
                                  steps_per=self.sorting_details['step_size'])
 
     def run_animation(self):
-        self.animation.terminate_animation()
         self.animation.update_animation(sorting_name=self.sorting_method,
                                         array_size=self.sorting_details['array_size'],
                                         interval=self.sorting_details['interval'],
