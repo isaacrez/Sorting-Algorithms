@@ -57,10 +57,12 @@ class Window(tk.Frame):
         vcmd = (frame.register(self.validate), '%P')
         input_label = ["Array size", "Interval time (ms)", "Step size"]
         input_id = ["array_size", "interval", "step_size"]
+
         for input_text, id in zip(input_label, input_id):
             current_entry = make_label_input_set(frame, input_text, validatecommand=vcmd)
-            event_response = lambda event: self.update_numeric_input(id, current_entry)
-            current_entry.bind("<Key>", event_response)
+            event_response = lambda event, id = id, current_entry = current_entry: \
+                self.update_numeric_input(id, current_entry)
+            current_entry.bind("<KeyRelease>", event_response)
             current_entry.bind("<FocusOut>", event_response)
 
         button = tk.Button(frame)
@@ -73,10 +75,7 @@ class Window(tk.Frame):
         self.sorting_method = self.sorting_selector.get()
 
     def update_numeric_input(self, id: str, entry: tk.Entry):
-        print("This was called")
         if entry.get():
-            print(id)
-            print(entry.get())
             self.sorting_details[id] = int(entry.get())
 
     def validate(self, value_if_allowed):
@@ -95,15 +94,20 @@ class Window(tk.Frame):
         self.axis = self.figure.add_subplot(111)
         self.canvas = FigureCanvasTkAgg(self.figure, self.master)
         self.canvas._tkcanvas.pack(fill='both', expand=True)
+        self.animation = sA.Anim(self.figure,
+                                 self.axis,
+                                 sorting_name=self.sorting_method,
+                                 array_size=self.sorting_details['array_size'],
+                                 interval=self.sorting_details['interval'],
+                                 steps_per=self.sorting_details['step_size'])
 
     def run_animation(self):
-        animation = sA.Anim(self.figure,
-                            self.axis,
-                            sorting_name=self.sorting_method,
-                            array_size=self.sorting_details['array_size'],
-                            interval=self.sorting_details['interval'],
-                            steps_per=self.sorting_details['step_size'])
-        animation.start_animation()
+        self.animation.terminate_animation()
+        self.animation.update_animation(sorting_name=self.sorting_method,
+                                        array_size=self.sorting_details['array_size'],
+                                        interval=self.sorting_details['interval'],
+                                        steps_per=self.sorting_details['step_size'])
+        self.animation.start_animation()
         self.canvas.draw()
 
 
