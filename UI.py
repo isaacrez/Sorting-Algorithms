@@ -22,20 +22,7 @@ class Window(tk.Frame):
     def create_window(self):
         self.master.title("Number Sorting Visualization")
         self.pack()
-        self.create_menu_bar()
         self.create_side_bar()
-
-    def create_menu_bar(self):
-        menu = tk.Menu(self.master)
-        self.master.config(menu=menu)
-
-        file = tk.Menu(menu)
-        file.add_command(label="Exit", command=self.client_exit)
-        menu.add_cascade(label="File", menu=file)
-
-        edit = tk.Menu(menu)
-        edit.add_command(label="Undo")
-        menu.add_cascade(label="Placeholder", menu=edit)
 
     def client_exit(self):
         exit()
