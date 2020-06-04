@@ -88,7 +88,7 @@ class MergeSort(Sorter):
     def _base_sort(self):
         i = self.current_index
         j = self.compare_index
-        if self.num_array.size <= j:
+        if self.num_array.size-1 < i:
             self._next_partition()
             return
         elif self.num_array[i] < self.num_array[j]:
